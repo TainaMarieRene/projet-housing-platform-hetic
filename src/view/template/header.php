@@ -1,5 +1,5 @@
 <?= "Je suis le header :) " ?>
-<?php if($data['is_logged_in']): ?>
+<?php if($data['user_logged_in']): ?>
     <?= "Hello " . ($data['user_logged_in'])->getFirstname() ?>
     <a href="<?= __ROOT_URL__ ?>/logout">Logout</a>
 <?php else: ?>

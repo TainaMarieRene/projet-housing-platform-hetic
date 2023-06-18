@@ -13,7 +13,6 @@ class AuthCheckMiddleware implements Middleware{
     private AuthRepository $authRepository;
     private UserRepository $userRepository;
     private ?UserModel $user;
-    private bool $isLoggedIn;
 
     public function __construct(
         private ?int $id = null,
@@ -28,17 +27,11 @@ class AuthCheckMiddleware implements Middleware{
 
         if($this->isLoggedIn($this->id, $this->agent, $this->token)){
             $this->user = (new UserRepository())->getUserById($_COOKIE['aparisCookieUserID']);
-            $this->isLoggedIn = true;
         } else {
-            if($this->id && $this->agent){
-                $this->authRepository->deleteToken($this->id, $this->agent);
-            }
             setcookie('aparisCookieUserID', '', time()-(3600));
             setcookie('aparisCookieAgent', '', time()-3600);
             setcookie('aparisCookieToken', '', time()-3600);
             $this->user = null;
-            $this->isLoggedIn = false;
-            echo('Déconnecté');
         }
     }
 
@@ -52,9 +45,5 @@ class AuthCheckMiddleware implements Middleware{
 
     public function getUser(): ?UserModel{
         return $this->user;
-    }
-
-    public function getIsLoggedIn(): bool{
-        return $this->isLoggedIn;
     }
 }

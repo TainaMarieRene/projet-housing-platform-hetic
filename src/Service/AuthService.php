@@ -8,7 +8,6 @@ use Repository\AuthRepository;
 
 // Model
 use Model\UserModel;
-use Model\AuthModel;
 
 class AuthService{
 
@@ -96,6 +95,16 @@ class AuthService{
 
     public function clearSession(int $id, string $agent): void{
         (new AuthRepository())->deleteToken($id, $agent);
+        $this->clearCookies();
+    }
+
+    public function setCookies(int $user_id, string $agent, string $token): void{
+        setcookie('aparisCookieUserID', $user_id, time()+(30*24*60*60));
+        setcookie('aparisCookieAgent', $agent, time()+(30*24*60*60));
+        setcookie('aparisCookieToken', $token, time()+(30*24*60*60));
+    }
+
+    public function clearCookies(): void{
         setcookie('aparisCookieUserID', '', time()-(3600));
         setcookie('aparisCookieAgent', '', time()-3600);
         setcookie('aparisCookieToken', '', time()-3600);
